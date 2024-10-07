@@ -1,0 +1,14 @@
+/* HomePage.css */
+.ant-menu {
+    background-color: #141e2c !important; /* Custom background color */
+  }
+  
+  .ant-menu-item {
+    font-size: 16px;
+    color: #ffffff !important; /* Custom font color */
+  }
+  
+  .ant-menu-item:hover {
+    background-color: #f0a70a !important; /* Hover effect color */
+  }
+  
