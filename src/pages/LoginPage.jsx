@@ -15,30 +15,23 @@ const LoginPage = () => {
   const handleGoogleLoginSuccess = (credentialResponse) => {
     console.log('Google Login Success:', credentialResponse);
     // Send credential to backend for verification
-    axios
-      .post('/api/google-login', {
-        credential: credentialResponse.credential,
-      })
-      .then((response) => {
-        const resp = response.data;
-        if (resp.code === 0) {
-          message.success('Google Login successful');
-          // Store user data
-          localStorage.setItem('user', JSON.stringify(resp.data));
-          // Store USERKEY if present
-          if (userKey) {
-            localStorage.setItem('USERKEY', userKey);
-          }
-          // Navigate to dashboard
-          navigate('/dashboard');
-        } else {
-          message.error(resp.message);
-        }
-      })
-      .catch((error) => {
-        message.error('Google Login failed');
-        console.error('Google Login Error:', error);
-      });
+    axios.post('http://localhost:8080/api/google-login', {
+      credential: credentialResponse.credential,
+    })
+    .then((response) => {
+      const resp = response.data;
+      if (resp.code === 0) {
+        message.success('Google Login successful');
+        localStorage.setItem('user', JSON.stringify(resp.data));
+        navigate('/dashboard');
+      } else {
+        message.error(resp.message);
+      }
+    })
+    .catch((error) => {
+      message.error('Google Login failed');
+      console.error('Google Login Error:', error);
+    });  
   };
 
   const handleGoogleLoginFailure = (error) => {

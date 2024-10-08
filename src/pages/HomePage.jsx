@@ -454,6 +454,9 @@ const HomePage = () => {
         <Menu.Item key="settings" icon={<SettingOutlined />} onClick={() => navigate('/settings')}>
           Settings
         </Menu.Item>
+        <Menu.Item key="settings" icon={<SettingOutlined />} onClick={() => navigate('/settings')}>
+          Settings
+        </Menu.Item>
         <Menu.Item
           key="login"
           icon={isLoggedIn ? <LogoutOutlined /> : <LoginOutlined />}
