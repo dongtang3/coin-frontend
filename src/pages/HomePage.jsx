@@ -58,7 +58,7 @@ const HomePage = () => {
   const trendPanelRef = useRef(null);
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false); // Login state
-
+  const [userEmail, setUserEmail] = useState(''); // User email state
   useEffect(() => {
     init();
     // Uncomment the following code if you need to display your widget
@@ -78,17 +78,30 @@ const HomePage = () => {
     getCNYRate();
     getSymbol();
   };
-  // Handle login/logout click
+
+  useEffect(() => {
+    const email = localStorage.getItem('email');
+    if (email) {
+      setIsLoggedIn(true);
+      setUserEmail(email); // Set email if user is logged in
+    }
+  }, []);
+
   const handleLoginLogout = () => {
     if (isLoggedIn) {
       // Handle logout logic
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('email');
       setIsLoggedIn(false);
+      setUserEmail('');
       message.success('Logged out successfully');
     } else {
       // Navigate to login page
       navigate('/login');
     }
   };
+
 
   // Load carousel image data
   const loadPicData = () => {
@@ -441,31 +454,29 @@ const HomePage = () => {
   return (
     <div>
       {/* Menu Bar */}
-      <Menu mode="horizontal" theme="dark" style={{ lineHeight: '64px' }}>
-        <Menu.Item key="home" icon={<HomeOutlined />} onClick={() => navigate('/')}>
-          Home
-        </Menu.Item>
-        <Menu.Item key="favorites" icon={<StarOutlined />} onClick={() => navigate('/favorites')}>
-          Favorites
-        </Menu.Item>
-        <Menu.Item key="profile" icon={<UserOutlined />} onClick={() => navigate('/profile')}>
-          Profile
-        </Menu.Item>
-        <Menu.Item key="settings" icon={<SettingOutlined />} onClick={() => navigate('/settings')}>
-          Settings
-        </Menu.Item>
-        <Menu.Item key="settings" icon={<SettingOutlined />} onClick={() => navigate('/settings')}>
-          Settings
-        </Menu.Item>
-        <Menu.Item
-          key="login"
-          icon={isLoggedIn ? <LogoutOutlined /> : <LoginOutlined />}
-          onClick={handleLoginLogout}
-          style={{ marginLeft: 'auto' }} // Push to the right
-        >
-          {isLoggedIn ? 'Logout' : 'Login'}
-        </Menu.Item>
-      </Menu>
+    <Menu mode="horizontal" theme="dark" style={{ lineHeight: '64px' }}>
+      <Menu.Item key="home" icon={<HomeOutlined />} onClick={() => navigate('/')}>
+        Home
+      </Menu.Item>
+      <Menu.Item key="favorites" icon={<StarOutlined />} onClick={() => navigate('/favorites')}>
+        Favorites
+      </Menu.Item>
+      <Menu.Item key="profile" icon={<UserOutlined />} onClick={() => navigate('/profile')}>
+        Profile
+      </Menu.Item>
+      <Menu.Item key="settings" icon={<SettingOutlined />} onClick={() => navigate('/settings')}>
+        Settings
+      </Menu.Item>
+      {/* Display user email if logged in, otherwise show Login/Logout */}
+      <Menu.Item
+        key="login"
+        icon={isLoggedIn ? <LogoutOutlined /> : <LoginOutlined />}
+        onClick={handleLoginLogout}
+        style={{ marginLeft: 'auto' }}
+      >
+        {isLoggedIn ? userEmail : 'Login'}
+      </Menu.Item>
+    </Menu>
       <div id="fullpage">
         <div
           style={{

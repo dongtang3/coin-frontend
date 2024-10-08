@@ -1,56 +1,107 @@
-import React from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { message } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { message, Input, Button } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginPage = () => {
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [isRegistering, setIsRegistering] = useState(false); // Switch between login and register
+  const [registerData, setRegisterData] = useState({ email: '', password: '', confirmPassword: '' });
   const navigate = useNavigate();
-  const location = useLocation();
 
-  // Parse query parameters
-  const query = new URLSearchParams(location.search);
-  const userKey = query.get('key');
-
-  const handleGoogleLoginSuccess = (credentialResponse) => {
-    console.log('Google Login Success:', credentialResponse);
-    // Send credential to backend for verification
-    axios.post('http://localhost:8080/api/google-login', {
-      credential: credentialResponse.credential,
-    })
-    .then((response) => {
-      const resp = response.data;
-      if (resp.code === 0) {
-        message.success('Google Login successful');
-        localStorage.setItem('user', JSON.stringify(resp.data));
-        navigate('/dashboard');
-      } else {
-        message.error(resp.message);
-      }
-    })
-    .catch((error) => {
-      message.error('Google Login failed');
-      console.error('Google Login Error:', error);
-    });  
+  const handleLogin = () => {
+    axios.post('http://localhost:8080/auth/authenticate', loginData)
+      .then((response) => {
+        const resp = response.data;
+        if (resp.code === 0) {
+          message.success('Login successful');
+          localStorage.setItem('access_token', resp.accessToken);
+          localStorage.setItem('refresh_token', resp.refreshToken);
+          localStorage.setItem('email', resp.email);
+          navigate('/');
+        } else {
+          message.error(resp.message);
+        }
+      })
+      .catch((error) => {
+        message.error('Login failed');
+        console.error('Login Error:', error);
+      });
   };
 
-  const handleGoogleLoginFailure = (error) => {
-    console.error('Google Login Failed:', error);
-    message.error('Google Login failed');
+  const handleRegister = () => {
+    if (registerData.password !== registerData.confirmPassword) {
+      message.error('Passwords do not match');
+      return;
+    }
+
+    axios.post('http://localhost:8080/auth/register', registerData)
+      .then((response) => {
+        message.success('Registration successful');
+        setIsRegistering(false); // Switch back to login
+      })
+      .catch((error) => {
+        message.error('Registration failed');
+        console.error('Registration Error:', error);
+      });
   };
 
   return (
-    <GoogleOAuthProvider clientId="985502286243-ge3o1guebh9ai0k7jce5cd5g8q319k10.apps.googleusercontent.com">
-      <div style={{ maxWidth: '300px', margin: '0 auto', padding: '50px' }}>
-        <h2>Login with Google</h2>
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <GoogleLogin
-            onSuccess={handleGoogleLoginSuccess}
-            onError={handleGoogleLoginFailure}
+    <div style={{ maxWidth: '300px', margin: '0 auto', padding: '50px' }}>
+      <h2>{isRegistering ? 'Register' : 'Login'}</h2>
+      
+      {isRegistering ? (
+        <>
+          <Input
+            placeholder="Email"
+            value={registerData.email}
+            onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+            style={{ marginBottom: '10px' }}
           />
-        </div>
-      </div>
-    </GoogleOAuthProvider>
+          <Input.Password
+            placeholder="Password"
+            value={registerData.password}
+            onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+            style={{ marginBottom: '10px' }}
+          />
+          <Input.Password
+            placeholder="Confirm Password"
+            value={registerData.confirmPassword}
+            onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+            style={{ marginBottom: '10px' }}
+          />
+          <Button type="primary" onClick={handleRegister}>
+            Register
+          </Button>
+          <p>
+            Already have an account?{' '}
+            <a onClick={() => setIsRegistering(false)}>Login here</a>
+          </p>
+        </>
+      ) : (
+        <>
+          <Input
+            placeholder="Email"
+            value={loginData.email}
+            onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
+            style={{ marginBottom: '10px' }}
+          />
+          <Input.Password
+            placeholder="Password"
+            value={loginData.password}
+            onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+            style={{ marginBottom: '10px' }}
+          />
+          <Button type="primary" onClick={handleLogin}>
+            Login
+          </Button>
+          <p>
+            Don't have an account?{' '}
+            <a onClick={() => setIsRegistering(true)}>Register here</a>
+          </p>
+        </>
+      )}
+    </div>
   );
 };
 
