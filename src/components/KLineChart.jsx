@@ -1,6 +1,7 @@
 // src/components/KLineChart.jsx
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
+import './KLineChart.css';
 
 const KLineChart = ({ data }) => {
   const chartRef = useRef(null);
@@ -13,22 +14,21 @@ const KLineChart = ({ data }) => {
       return;
     }
 
-    // Prepare data for KLine chart
     const ohlc = data.map(item => [
-      new Date(item.time * 1000).toLocaleString(), // formatted time
+      new Date(item.time * 1000).toLocaleString(),
       item.openPrice,
-      item.highestPrice,
-      item.lowestPrice,
       item.closePrice,
+      item.lowestPrice,
+      item.highestPrice,
     ]);
 
     const option = {
-      backgroundColor: '#1e1e2c', // Matching container background
+      backgroundColor: '#ffffff',
       title: {
         text: 'K-Line Chart',
         left: 'center',
         textStyle: {
-          color: '#ffffff',
+          color: '#333333',
         },
       },
       tooltip: {
@@ -37,95 +37,44 @@ const KLineChart = ({ data }) => {
           type: 'cross',
         },
       },
-      grid: {
-        left: '10%',
-        right: '10%',
-        bottom: '15%',
-      },
       xAxis: {
         type: 'category',
         data: ohlc.map(item => item[0]),
         axisLine: {
           lineStyle: {
-            color: '#ffffff',
+            color: '#333333',
           },
-        },
-        splitLine: {
-          show: false,
         },
         axisLabel: {
-          color: '#ffffff',
-          formatter: function (value) {
-            return value.split(' ')[1]; // Show only time
-          },
+          color: '#333333',
         },
       },
       yAxis: {
         scale: true,
-        splitArea: {
-          show: true,
-          areaStyle: {
-            color: ['#1e1e2c', '#141e2c'],
-          },
-        },
         axisLine: {
           lineStyle: {
-            color: '#ffffff',
+            color: '#333333',
           },
         },
         splitLine: {
           lineStyle: {
-            color: '#444444',
+            color: '#e8e8e8',
           },
         },
         axisLabel: {
-          color: '#ffffff',
+          color: '#333333',
         },
       },
-      dataZoom: [
-        {
-          type: 'inside',
-          start: 50,
-          end: 100,
-        },
-        {
-          show: true,
-          type: 'slider',
-          top: '90%',
-          start: 50,
-          end: 100,
-          backgroundColor: '#2c3e50',
-          dataBackground: {
-            lineStyle: {
-              color: '#bbb',
-            },
-          },
-          fillerColor: '#f0a70a',
-          handleColor: '#ffffff',
-        },
-      ],
       series: [
         {
           name: 'K-Line',
           type: 'candlestick',
-          data: ohlc,
+          data: ohlc.map(item => item.slice(1)),
           itemStyle: {
-            color: '#ec0000', // Down color
-            color0: '#00da3c', // Up color
-            borderColor: '#8A0000', // Down border
-            borderColor0: '#008F28', // Up border
-          },
-          tooltip: {
-            formatter: function (param) {
-              const item = param[0];
-              return `
-                ${item.name}<br/>
-                Open: ${item.data[1]}<br/>
-                High: ${item.data[2]}<br/>
-                Low: ${item.data[3]}<br/>
-                Close: ${item.data[4]}
-              `;
-            },
+            color: '#f44336',      
+            color0: '#4caf50',      
+            borderColor: '#f44336',
+            borderColor0: '#4caf50',
           },
         },
       ],
@@ -133,13 +82,12 @@ const KLineChart = ({ data }) => {
 
     chart.setOption(option);
 
-    // Cleanup on unmount
     return () => {
       chart.dispose();
     };
   }, [data]);
 
-  return <div ref={chartRef} style={{ width: '100%', height: '400px' }} />;
+  return <div ref={chartRef} className="kline-chart" />;
 };
 
 export default KLineChart;
