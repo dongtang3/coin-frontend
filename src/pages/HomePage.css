@@ -1,37 +1,41 @@
 /* HomePage.css */
 .homepage-container {
-    background-color: #141e2c;
-    color: #ffffff;
+    background-color: #f5f7fa;
+    color: #333333;
     min-height: 100vh;
     padding: 20px;
     display: flex;
     flex-direction: column;
 }
+
 .kline-chart-container {
-  margin: 20px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
 .ant-menu {
-    background-color: #141e2c !important; /* Custom background color */
-    border-bottom: none;
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #e8e8e8;
 }
 
 .ant-menu-item {
     font-size: 16px;
-    color: #ffffff !important; /* Custom font color */
+    color: #333333 !important;
     display: flex;
     align-items: center;
 }
 
 .ant-menu-item:hover {
-    background-color: #f0a70a !important; /* Hover effect color */
+    background-color: #f0a70a !important;
+    color: #ffffff !important;
 }
 
 .ant-menu-item-selected {
-    background-color: #f0a70a !important; /* Selected menu item color */
+    background-color: #f0a70a !important;
+    color: #ffffff !important;
 }
 
 .ant-menu-item .anticon {
@@ -44,18 +48,20 @@
 
 .announcement-carousel .slick-slide {
     text-align: center;
-    color: #ffffff;
-    background: #333333;
+    color: #333333;
+    background: #ffffff;
     padding: 40px 0;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .ant-tabs {
-    background-color: #1e1e1e;
-    color: #ffffff;
+    background-color: #ffffff;
+    color: #333333;
 }
 
 .ant-tabs-tab {
-    color: #ffffff;
+    color: #666666;
 }
 
 .ant-tabs-tab-active {
