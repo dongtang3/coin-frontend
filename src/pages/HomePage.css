@@ -1,14 +1,85 @@
 /* HomePage.css */
+.homepage-container {
+    background-color: #141e2c;
+    color: #ffffff;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+.kline-chart-container {
+  margin: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 .ant-menu {
     background-color: #141e2c !important; /* Custom background color */
-  }
-  
-  .ant-menu-item {
+    border-bottom: none;
+}
+
+.ant-menu-item {
     font-size: 16px;
     color: #ffffff !important; /* Custom font color */
-  }
-  
-  .ant-menu-item:hover {
+    display: flex;
+    align-items: center;
+}
+
+.ant-menu-item:hover {
     background-color: #f0a70a !important; /* Hover effect color */
-  }
-  
+}
+
+.ant-menu-item-selected {
+    background-color: #f0a70a !important; /* Selected menu item color */
+}
+
+.ant-menu-item .anticon {
+    margin-right: 8px;
+}
+
+.announcement-carousel {
+    margin: 20px 0;
+}
+
+.announcement-carousel .slick-slide {
+    text-align: center;
+    color: #ffffff;
+    background: #333333;
+    padding: 40px 0;
+}
+
+.ant-tabs {
+    background-color: #1e1e1e;
+    color: #ffffff;
+}
+
+.ant-tabs-tab {
+    color: #ffffff;
+}
+
+.ant-tabs-tab-active {
+    color: #f0a70a;
+}
+
+.ant-tabs-ink-bar {
+    background-color: #f0a70a;
+}
+
+@media (max-width: 768px) {
+    .homepage-container {
+        padding: 10px;
+    }
+
+    .ant-menu-horizontal {
+        flex-direction: column;
+    }
+
+    .ant-menu-item {
+        margin: 0;
+    }
+
+    .ant-tabs {
+        font-size: 14px;
+    }
+}

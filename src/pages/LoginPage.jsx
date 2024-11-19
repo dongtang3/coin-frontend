@@ -15,8 +15,13 @@ const LoginPage = () => {
         const resp = response.data;
         if (resp.code === 0) {
           message.success('Login successful');
-          localStorage.setItem('access_token', resp.accessToken);
-          localStorage.setItem('refresh_token', resp.refreshToken);
+          localStorage.setItem('access_token', resp.access_token);
+          console.log('Storing access_token:', resp.access_token); // Debugging log
+
+          localStorage.setItem('refresh_token', resp.refresh_token);
+
+          console.log('Storing refresh_token:', resp.refresh_token); // Debugging log
+
           localStorage.setItem('email', resp.email);
           navigate('/');
         } else {
