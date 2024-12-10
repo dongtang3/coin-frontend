@@ -1,0 +1,40 @@
+/* TradePage.css */
+.trade-page {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  
+  .trade-card {
+    margin-bottom: 20px;
+  }
+  
+  .price-display {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .trade-type-selector {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  
+  .buy-button {
+    background-color: #52c41a;
+    border-color: #52c41a;
+  }
+  
+  .sell-button {
+    background-color: #f5222d;
+    border-color: #f5222d;
+  }
+  
+  .history-card {
+    background: #ffffff;
+  }
+  
+  .ant-table {
+    background: #ffffff;
+  }

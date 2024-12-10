@@ -1,4 +1,3 @@
-// HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import { Modal, Menu, Tabs, Carousel, Table, message } from 'antd';
 import { useNavigate } from 'react-router-dom';
@@ -22,13 +21,21 @@ const HomePage = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [klineData, setKlineData] = useState([]);
-   // Symbol mapping from frontend to backend
-   const SYMBOL_MAP = {
+
+  // Symbol mapping from frontend to backend
+  const SYMBOL_MAP = {
     BTC: 'XBT/USD',
     ETH: 'ETH/USD',
     LTC: 'LTC/USD',
     // Add more mappings as needed
   };
+
+
+  const REVERSED_SYMBOL_MAP = {};
+  for (const [name, symbol] of Object.entries(SYMBOL_MAP)) {
+    REVERSED_SYMBOL_MAP[symbol] = name;
+  }
+
   // Resolution mapping
   const RESOLUTIONS = {
     '1m': '1',
@@ -36,7 +43,7 @@ const HomePage = () => {
     '15m': '15',
     '1h': '60',
     '4h': '240',
-    '1d': '1D'
+    '1d': '1D',
   };
 
   useEffect(() => {
@@ -59,6 +66,7 @@ const HomePage = () => {
     try {
       const response = await axios.get('/market/symbol'); // Relative path
       setMarketData(response.data);
+      console.log('Market data:', response.data);
     } catch (error) {
       console.error('Error fetching market data:', error);
       message.error('Failed to fetch market data');
@@ -66,36 +74,34 @@ const HomePage = () => {
       setLoading(false);
     }
   };
-    // Fetch KLine data from backend API
-    const fetchKlineData = async (currency) => {
-      const symbol = SYMBOL_MAP[currency] || 'XBT/USD';
-      const resolution = '1m'; // Example resolution
-      const to = Math.floor(Date.now() / 1000); // Current time in seconds
-      const from = to - 60 * 60; // 1 hour ago
-  
-      try {
-        const response = await axios.get('/market/history', {
-          params: {
-            symbol: symbol,
-            from: from,
-            to: to,
-            resolution: resolution,
-          },
-        });
-        setKlineData(response.data);
-      } catch (error) {
-        console.error('Error fetching KLine data:', error);
-        message.error('Failed to fetch KLine data');
-      }
-    };
-  
 
+  // Fetch KLine data from backend API
+  const fetchKlineData = async (currency) => {
+    const symbol = SYMBOL_MAP[currency] || 'XBT/USD';
+    const resolution = '1m'; // Example resolution
+    const to = Math.floor(Date.now() / 1000); // Current time in seconds
+    const from = to - 60 * 60; // 1 hour ago
 
-    const handleTabChange = (currency) => {
-      setSelectedCurrency(currency);
-      // KLine data will be fetched automatically via useEffect
-    };
-  
+    try {
+      const response = await axios.get('/market/history', {
+        params: {
+          symbol: symbol,
+          from: from,
+          to: to,
+          resolution: resolution,
+        },
+      });
+      setKlineData(response.data);
+    } catch (error) {
+      console.error('Error fetching KLine data:', error);
+      message.error('Failed to fetch KLine data');
+    }
+  };
+
+  const handleTabChange = (currency) => {
+    setSelectedCurrency(currency);
+    // KLine data will be fetched automatically via useEffect
+  };
 
   const handleLoginLogout = () => {
     if (userEmail) {
@@ -129,31 +135,40 @@ const HomePage = () => {
       render: (text) => text.toUpperCase(),
     },
     {
-      title: 'Current Price',
-      dataIndex: 'currentPrice',
-      key: 'currentPrice',
+      title: 'Max Buy Price',
+      dataIndex: 'maxBuyPrice',
+      key: 'maxBuyPrice',
       render: (price) => `$${Number(price).toLocaleString()}`,
     },
     {
-      title: 'Market Cap',
-      dataIndex: 'marketCap',
-      key: 'marketCap',
+      title: 'Min Sell Price',
+      dataIndex: 'minSellPrice',
+      key: 'minSellPrice',
       render: (cap) => `$${Number(cap).toLocaleString()}`,
     },
   ];
 
+  const dataSource = marketData.map((item, index) => ({
+    key: index,
+    name:
+      REVERSED_SYMBOL_MAP[item.symbol] || item.coinSymbol || item.baseSymbol,
+    symbol: item.symbol,
+    maxBuyPrice: item.maxBuyPrice,
+    minSellPrice: item.minSellPrice,
+  }));
+
   return (
     <div className="homepage-container">
       <Menu theme="light" mode="horizontal">
-        <Menu.Item key="home" icon={<HomeOutlined />} onClick={() => navigate('/')}>
+        <Menu.Item
+          key="home"
+          icon={<HomeOutlined />}
+          onClick={() => navigate('/')}
+        >
           Home
         </Menu.Item>
-        <Menu.Item
-          key="favorites"
-          icon={<StarOutlined />}
-          onClick={() => navigate('/favorites')}
-        >
-          Favorites
+        <Menu.Item key="trade" onClick={() => navigate('/trade')}>
+          Trade
         </Menu.Item>
         <Menu.Item
           key="profile"
@@ -185,23 +200,20 @@ const HomePage = () => {
       </div>
       {/* Carousel for announcements or market updates */}
       <Carousel autoplay className="announcement-carousel">
-        <div>
-          <h3>Welcome to Our Crypto Platform!</h3>
-        </div>
-        <div>
-          <h3>Latest Market Trends</h3>
-        </div>
-        <div>
-          <h3>Join Our Community</h3>
-        </div>
-        <div>
-          <h3>Secure Your Investments</h3>
-        </div>
+      <div>
+        <img src="/1.jpeg" alt="1" style={{ width: '100%', height: 'auto' }} />
+      </div>
+      <div>
+        <img src="/2.jpeg" alt="2" style={{ width: '100%', height: 'auto' }} />
+      </div>
+      <div>
+        <img src="/3.jpg" alt="3" style={{ width: '100%', height: 'auto' }} />
+      </div>
       </Carousel>
 
       {/* Market Data Table */}
       <Table
-        dataSource={marketData}
+        dataSource={dataSource}
         loading={loading}
         columns={columns}
         rowKey="symbol"
