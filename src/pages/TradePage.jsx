@@ -243,6 +243,9 @@ const TradePage = () => {
 
         {/* Countdown Timer */}
         <Form.Item>
+        <div className="price-display">
+          Current Price: ${currentPrice ? Number(currentPrice).toLocaleString() : '---'}
+        </div>
           <div>Next refresh in: {countdown} seconds</div>
         </Form.Item>
       </Form>
